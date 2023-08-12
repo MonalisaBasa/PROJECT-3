@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useReducer, useContext } from 'react';
+import React, { useState, useEffect, useReducer, useContext, useRef } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
 import Button from '../UI/Button/Button';
 import AuthContext from '../../store/auth-context';
-import Input from '../UI/Input/input';
+import Input from '../UI/Input/Input';
 
 const emailReducer = (state, action) =>{
   if( action.type === 'USER_INPUT'){
@@ -40,7 +40,7 @@ const Login = (props) => {
     isValid:false
   });
 
-  const[password,dispatchPassword] = useReducer(passwordReducer, {
+  const[passwordState,dispatchPassword] = useReducer(passwordReducer, {
     value: '',
     isValid: null,
     })
@@ -65,6 +65,9 @@ const Login = (props) => {
   //     clearTimeout(identifier);
   //   }
   // },[enteredEmail,enteredPassword,enteredcollege]);
+
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
  useEffect(() =>{
   console.log('EFFECT RUNNING');
  
@@ -101,7 +104,7 @@ const Login = (props) => {
    
 
   const passwordChangeHandler = (event) => {
-    setEnteredPassword(event.target.value);
+    // setEnteredPassword(event.target.value);
 
     // setFormIsValid(
     //   event.target.value.trim().length > 6 && enteredEmail.includes('@')
@@ -114,9 +117,9 @@ const Login = (props) => {
    
   };
 
-  const collegeChangeHandler = (event) => {
-    setEnteredcollege(event.target.value);
-  }
+  // const collegeChangeHandler = (event) => {
+  //   setEnteredcollege(event.target.value);
+  // }
   const validateEmailHandler = () => {
     // setEmailIsValid(enteredEmail.includes('@'));
    
@@ -130,9 +133,9 @@ const Login = (props) => {
     dispatchPassword({type: 'INPUT_BLUR'});
   };
 
-  const validateCollegeHandler = () => {
-    setcollegeIsValid(enteredcollege.trim().length > 0);
-  };
+  // const validateCollegeHandler = () => {
+  //   setcollegeIsValid(enteredcollege.trim().length > 0);
+  // };
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -141,9 +144,11 @@ const Login = (props) => {
     }
     else if(!emailIsValid){
 
-       
+       emailInputRef.current.focus();
     }
-    else{}
+    else{
+      passwordInputRef.current.focus();
+    }
     // props.onLogin(enteredEmail, enteredPassword);
     // reducer code
     // props.onLogin(emailState.value, enteredPassword);
@@ -154,6 +159,7 @@ const Login = (props) => {
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
         <Input 
+        ref={emailInputRef}
         id="email" 
         label="E-mail" 
         type="email"
@@ -177,6 +183,7 @@ const Login = (props) => {
           />
         </div> */}
         <Input 
+        ref={passwordInputRef}
         id="password" 
         label="Password" 
         type="password"
@@ -185,7 +192,7 @@ const Login = (props) => {
         onChange={passwordChangeHandler}
         onBlur={validatePasswordHandler}
         />
-        <div
+        {/* <div
           className={`${classes.control} ${
             collegeIsValid === false ? classes.invalid : ''
           }`}
@@ -198,7 +205,7 @@ const Login = (props) => {
             onChange={collegeChangeHandler}
             onBlur={validateCollegeHandler}
           />
-        </div>
+        </div> */}
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn} >
             Login
